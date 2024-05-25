@@ -46,7 +46,9 @@ def user_login(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect
         if user:
             login(request, user)
             return redirect(dashboard)
-    return render(request, user_login)
+        else:
+            messages.error(request, 'Invalid username or password.')
+    return render(request, 'app/base.html')
 
 def register(request):
     if request.method == 'POST':

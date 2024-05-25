@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <title>OJT Management System</title>
+    <title>Login - OJT Management System</title>
     <style>
         .navbar-brand {
             display: flex;
@@ -52,6 +52,13 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">OMS Student Login</h5>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <form method="post" action="{% url 'students:login' %}">
                             {% csrf_token %}
                             <div class="form-group">

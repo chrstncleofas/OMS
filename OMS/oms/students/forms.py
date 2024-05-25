@@ -15,3 +15,10 @@ class StudentRegistrationForm(forms.ModelForm):
     class Meta:
         model = TableStudents
         fields = ['StudentID', 'Firstname', 'Lastname', 'Course', 'Year']
+
+    def __init__(self, *args, **kwargs):
+        super(StudentRegistrationForm, self).__init__(*args, **kwargs)
+        self.fields['Firstname'].required = True
+        self.fields['Lastname'].required = True
+        self.fields['Course'].required = True
+        self.fields['Year'].required = True

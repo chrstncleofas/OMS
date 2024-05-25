@@ -28,26 +28,32 @@ def studentRegister(request):
             student.Password = user.password
             student.save()     
             messages.success(request, 'Registration successful. Waiting for admin approval.')
-            return redirect('students:home')
+            return render(request, 'students/success.html', {'message': 'Registration successful!'})
     else:
         user_form = UserForm()
         student_form = StudentRegistrationForm()
     return render(request, 'students/register.html', {'user_form': user_form, 'student_form': student_form})
 
-def studentLogin(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect | HttpResponse):
+def studentLogin(request):
     if request.method == 'POST':
         username = request.POST.get('Username')
         password = request.POST.get('Password')
         user = authenticate(request, username=username, password=password)
         if user:
-            login(request, user)
-            return redirect('students:dashboard')
+            if user.is_active:
+                login(request, user)
+                return render(request, 'students/loginSuccess.html', {'message': 'Login successful!'})
+            else:
+                messages.error(request, 'Your account is disabled.')
         else:
-            messages.error(request, 'Your account is disabled.')
+            messages.error(request, 'Invalid username or password.')
     return render(request, 'students/login.html')
 
 def success(request):
     return render(request, 'students/success.html')
+
+def loginSuccess(request):
+    return render(request, 'students/loginSuccess.html')
 
 def studentLogout(request) -> HttpResponseRedirect:
     logout(request)

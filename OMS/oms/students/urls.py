@@ -13,4 +13,5 @@ urlpatterns = [
     path('dashboard/', views.studentDashboard, name='dashboard'),
     path('logout/', views.studentLogout, name='logout'),
     path('success/', views.success, name='success'),
+    path('loginSuccess/', views.loginSuccess, name='loginSuccess'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
