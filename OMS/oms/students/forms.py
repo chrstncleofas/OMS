@@ -1,9 +1,17 @@
 from django import forms
-from students.models import StudentTable
+from app.models import CustomUser
+from students.models import TableStudents
 
-class StudentRegistrationForm(forms.ModelForm):
-    Password = forms.CharField(widget=forms.PasswordInput)
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput)
 
     class Meta:
-        model = StudentTable
-        fields = ['StudentID', 'Firstname', 'Lastname', 'Email', 'Course', 'Year', 'Username', 'Password']
+        model = CustomUser
+        fields = ['username', 'email', 'password']
+
+class StudentRegistrationForm(forms.ModelForm):
+    StudentID = forms.CharField(max_length=10, label='Student ID')
+
+    class Meta:
+        model = TableStudents
+        fields = ['StudentID', 'Firstname', 'Lastname', 'Course', 'Year']

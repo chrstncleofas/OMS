@@ -1,8 +1,8 @@
 from django.db import models
-from django.conf import settings
+from app.models import CustomUser
 
-class StudentTable(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+class TableStudents(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     StudentID = models.CharField(max_length=10, unique=True)
     Firstname = models.CharField(max_length=100)
     Lastname = models.CharField(max_length=100)

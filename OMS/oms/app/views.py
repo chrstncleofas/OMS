@@ -3,7 +3,7 @@ from django.http import Http404
 from django.urls import reverse
 from django.conf import settings
 from django.contrib import messages
-from students.models import StudentTable
+from students.models import TableStudents
 from django.core.mail import send_mail
 from .forms import CustomUserCreationForm
 from django.shortcuts import render, redirect
@@ -21,7 +21,7 @@ def dashboard(request) -> HttpResponse:
     return render(request, DASHBOARD)
 
 def mainDashboard(request):
-    pending_students = StudentTable.objects.filter(is_approved=False)
+    pending_students = TableStudents.objects.filter(is_approved=False)
     pending_count = pending_students.count()
     return render(
         request,
@@ -30,7 +30,7 @@ def mainDashboard(request):
     )
 
 def getAllPendingRegister(request):
-    students = StudentTable.objects.filter(is_approved=False)
+    students = TableStudents.objects.filter(is_approved=False)
     return render(request, MANAGE_STUDENT, {
         'getAllPendingRegister': students,
     })
@@ -64,7 +64,7 @@ def register(request):
 
 MANAGE_STUDENT = 'app/manage-student.html'
 def approve_student(request, id):
-    student = StudentTable.objects.get(id=id)
+    student = TableStudents.objects.get(id=id)
     student.is_approved = True
     student.save()
     messages.success(request, f'{student.Firstname} {student.Lastname} has been approved.')

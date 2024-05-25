@@ -3,7 +3,7 @@ from django.db import connection
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from students.forms import StudentRegistrationForm
+from students.forms import StudentRegistrationForm, UserForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 
 def studentHome(request) -> HttpResponse:
@@ -12,25 +12,36 @@ def studentHome(request) -> HttpResponse:
 def studentDashboard(request) -> HttpResponse:
     return render(request, 'students/student-dashboard.html')
 
-def studentRegister(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect | HttpResponse):
+def studentRegister(request):
     if request.method == 'POST':
-        form = StudentRegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
+        user_form = UserForm(request.POST)
+        student_form = StudentRegistrationForm(request.POST)
+        if user_form.is_valid() and student_form.is_valid():
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()
+            student = student_form.save(commit=False)
+            student.user = user
+            student.StudentID = student_form.cleaned_data['StudentID']
+            student.Email = user.email
+            student.Username = user.username
+            student.Password = user.password
+            student.save()     
             messages.success(request, 'Registration successful. Waiting for admin approval.')
-            return redirect('students:studentHome')
+            return redirect('students:home')
     else:
-        form = StudentRegistrationForm()
-    return render(request, 'students/student-base.html', {'form': form})
+        user_form = UserForm()
+        student_form = StudentRegistrationForm()
+    return render(request, 'students/register.html', {'user_form': user_form, 'student_form': student_form})
 
 def studentLogin(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect | HttpResponse):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+        username = request.POST.get('Username')
+        password = request.POST.get('Password')
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
-            return redirect('students:studentDashboard')
+            return redirect('students:dashboard')
         else:
             messages.error(request, 'Your account is disabled.')
     return render(request, 'students/login.html')
@@ -41,4 +52,4 @@ def success(request):
 def studentLogout(request) -> HttpResponseRedirect:
     logout(request)
     messages.success(request, "Logged Out Successfully!!")
-    return redirect(reverse('students:studentHome'))  # Gumamit ng reverse function para sa pangalan ng ruta
+    return redirect(reverse('students:home'))

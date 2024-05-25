@@ -38,7 +38,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="{% url 'students:studentHome' %}">
+        <a class="navbar-brand" href="{% url 'students:home' %}">
             <img src="{% static 'img/Logo.png' %}" alt="Logo" style="width:50px; height: 50px; margin-left: 15px;">
             <p>OJT Management System</p>
         </a>
@@ -51,64 +51,11 @@
                 <a class="nav-link text-color-dark" href="{% url 'students:login' %}">Login</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-color-dark" href="#" data-toggle="modal" data-target="#registerModal">Register</a>
+                <a class="nav-link text-color-dark" href="{% url 'students:register' %}">Register</a>
             </li>
         </ul>
         </div>
     </nav>
-    <!-- Register Modal -->
-    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">OJT Mnanagement System Registration</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form method="post" action="{% url 'students:studentRegister' %}">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label for="studentID">Student ID</label>
-                            <input type="text" class="form-control" id="studentID" name="StudentID" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label for="firstName">First Name</label>
-                                <input type="text" class="form-control" id="firstName" name="Firstname" required>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label for="lastName">Last Name</label>
-                                <input type="text" class="form-control" id="lastName" name="Lastname" required>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" name="Email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="course">Course</label>
-                            <input type="text" class="form-control" id="course" name="Course" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="year">Year</label>
-                            <input type="number" class="form-control" id="year" name="Year" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="username">Username</label>
-                            <input type="text" class="form-control" id="registerUsername" name="Username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" id="registerPassword" name="Password" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Register</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
     <!--Card  -->
     <div class="container mt-5">
         <div class="outer-container">
