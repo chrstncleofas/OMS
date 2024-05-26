@@ -68,12 +68,44 @@
                     </ul>
                 </div>
             </nav>
-            <!-- Content -->
-            <div class="container">
-                <div class="outer-container">
-                    
-                </div>
-            </div> <!--End Content -->
+            <div class="container mt-5">
+                <h2>Time In/Time Out</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <div class="form-group">
+                        <button type="submit" id="timeInBtn" class="btn btn-success" onclick="document.getElementById('id_action').value='IN'">Time In</button>
+                        <button type="submit" id="timeOutBtn" class="btn btn-danger" onclick="document.getElementById('id_action').value='OUT'">Time Out</button>
+                    </div>
+                </form>
+                <h3 class="mt-5">Time Logs</h3>
+                <table class="table table-bordered mt-3">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                            <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in time_logs %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ log.action }}</td>
+                                <td>{{ log.timestamp }}</td>
+                                <td>
+                                    {% if log.image %}
+                                        <img src="{{ log.image.url }}" alt="Time {{ log.action }} Image" style="width: 100px; height: 100px;">
+                                    {% else %}
+                                        No Image
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!-- Scripts -->
@@ -84,6 +116,13 @@
         $(".navbar-toggler").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
+        });
+
+        document.getElementById('imageUpload').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                document.getElementById('timeInBtn').disabled = false;
+                document.getElementById('timeOutBtn').disabled = false;
+            }
         });
     </script>
 </body>

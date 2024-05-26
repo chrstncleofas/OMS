@@ -25,7 +25,7 @@
                 <a href="{% url 'getAllPendingRegister' %}" class="list-group-item list-group-item-action bg-light">
                     <i class="fas fa-hourglass-half icon"></i> Pending Registration
                 </a>
-                <a href="" class="list-group-item list-group-item-action bg-light">
+                <a href="{% url 'adminView' %}" class="list-group-item list-group-item-action bg-light">
                     <i class="fas fa-user-graduate"></i> Manage Student
                 </a>
                 <a href="#" class="list-group-item list-group-item-action bg-light">
@@ -85,15 +85,17 @@
                         </div>
                     </div>
                     <div class="col-lg-4">
-                        <div class="card text-white bg-warning">
-                            <div class="card-body">
-                                <i class="fas fa-hourglass-half icon"></i>
-                                <div>
-                                    <div class="count">{{ pending_count }}</div>
-                                    <div>Pending Registration</div>
+                        <a href="{% url 'getAllPendingRegister' %}" style="text-decoration: none;">
+                            <div class="card text-white bg-warning">
+                                <div class="card-body">
+                                    <i class="fas fa-hourglass-half icon"></i>
+                                    <div>
+                                        <div class="count">{{ pending_count }}</div>
+                                        <div>Pending Registration</div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     <div class="col-lg-4">
                         <div class="card text-white bg-danger">

@@ -15,3 +15,13 @@ class TableStudents(models.Model):
 
     def __str__(self):
         return f"{self.Firstname} {self.Lastname}"
+
+
+class TimeLog(models.Model):
+    student = models.ForeignKey(TableStudents, on_delete=models.CASCADE)
+    action = models.CharField(max_length=10, choices=[('IN', 'Time In'), ('OUT', 'Time Out')])
+    timestamp = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to='time_logs/', blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.student} - {self.action} at {self.timestamp}"

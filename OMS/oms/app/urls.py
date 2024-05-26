@@ -14,6 +14,7 @@ urlpatterns = [
     path('dashboard', views.dashboard, name='dashboard'),
     path('changePass', views.changePass, name='changePass'),
     path('mainDashboard', views.mainDashboard, name='mainDashboard'),
+    path('adminView', views.admin_view_time_logs, name='adminView'),
     path('pendingApplication', views.pendingApplication, name='pendingApplication'),
     path('approve_student/<int:id>/', views.approve_student, name='approve_student'),
     path('getAllPendingRegister', views.getAllPendingRegister, name='getAllPendingRegister'),

@@ -1,13 +1,13 @@
 from django.urls import reverse
 from django.contrib import messages
-from students.models import TableStudents
+from students.models import TableStudents, TimeLog
 from django.shortcuts import render, redirect
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from students.forms import StudentRegistrationForm, UserForm, ChangePasswordForm
+from students.forms import StudentRegistrationForm, UserForm, ChangePasswordForm, TimeLogForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 
 def studentHome(request) -> HttpResponse:
@@ -15,6 +15,7 @@ def studentHome(request) -> HttpResponse:
 
 def studentDashboard(request) -> HttpResponse:
     return render(request, 'students/student-dashboard.html')
+
 
 @login_required
 def mainDashboard(request) -> HttpResponse:
@@ -34,28 +35,65 @@ def mainDashboard(request) -> HttpResponse:
 def TimeInAndTimeOut(request):
     user = request.user
     student = get_object_or_404(TableStudents, user=user)
+
+    if request.method == 'POST':
+        form = TimeLogForm(request.POST, request.FILES)
+        if form.is_valid():
+            time_log = form.save(commit=False)
+            time_log.student = student
+            time_log.save()
+            messages.success(request, f'Time {time_log.action} recorded successfully with image.')
+            return redirect('students:TimeInAndTimeOut')
+        else:
+            messages.error(request, 'Failed to record time. Please ensure the form is filled out correctly.')
+    else:
+        form = TimeLogForm()
+
     firstName = student.Firstname
     lastName = student.Lastname
+    time_logs = TimeLog.objects.filter(student=student).order_by('-timestamp')
+
     return render(
         request,
         'students/timeIn-timeOut.html',
         {
             'firstName': firstName,
             'lastName': lastName,
+            'time_logs': time_logs,
+            'form': form,
         }
     )
 
 def studentProfile(request):
     user = request.user
     student = get_object_or_404(TableStudents, user=user)
-    firstName = student.Firstname
-    lastName = student.Lastname
+    
+    if request.method == 'POST':
+        firstName = request.POST.get('Firstname')
+        lastName = request.POST.get('Lastname')
+        email = request.POST.get('Email')
+        course = request.POST.get('Course')
+        year = request.POST.get('Year')
+
+        student.Firstname = firstName
+        student.Lastname = lastName
+        student.Email = email
+        student.Course = course
+        student.Year = year
+        student.save()
+
+        messages.success(request, 'Profile updated successfully.')
+        return redirect('students:profile')
+
     return render(
         request,
         'students/student-profile.html',
         {
-            'firstName': firstName,
-            'lastName': lastName,
+            'firstName': student.Firstname,
+            'lastName': student.Lastname,
+            'email': student.Email,
+            'course': student.Course,
+            'year': student.Year,
         }
     )
 
