@@ -38,6 +38,16 @@
         a:hover {
             text-decoration: none;
         }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 26px;
+        }
+        .footer p {
+            margin: 0;
+            color: #6c757d;
+        }
     </style>
 </head>
 <body>
@@ -139,12 +149,19 @@
                 </div>
             </div> <!--End Content -->
         </div>
+        <!-- Footer -->
     </div>
+    <footer class="footer">
+        <div class="container text-center">
+            <p>&copy; <span id="currentYear"></span> OJT Management System. All Rights Reserved.</p>
+        </div>
+    </footer>
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
     <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
         $(".navbar-toggler").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");

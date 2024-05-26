@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.conf import settings
 from app.models import CustomUser
 from app.forms import EditProfileForm
+from django.db.models import Sum
 from django.contrib import messages
 from django.http import JsonResponse
 from students.models import TableStudents, TimeLog
@@ -39,10 +40,14 @@ def mainDashboard(request):
     # 
     pending_students = TableStudents.objects.filter(is_approved=False)
     pending_count = pending_students.count()
+    # 
+    approve = TableStudents.objects.filter(is_approved=True)
+    approve_count = approve.count()
     return render(
         request,
         MAIN_DASHBOARD,
         {
+            'approve_count': approve_count,
             'pending_count': pending_count,
             'firstName': firstName,
             'lastName': lastName
@@ -138,7 +143,7 @@ def approve_student(request, id):
     student.is_approved = True
     student.save()
     messages.success(request, f'{student.Firstname} {student.Lastname} has been approved.')
-    return redirect(reverse('manageStudent'))
+    return redirect(reverse('pendingApplication'))
 
 def logoutView(request) -> HttpResponseRedirect:
     logout(request)
@@ -149,22 +154,40 @@ def is_admin(user):
     return user.is_superuser
 
 @user_passes_test(is_admin)
-def admin_view_time_logs(request):
+def timeSheet(request):
     students = TableStudents.objects.all()
     selected_student = None
-    time_logs = None
+    time_logs = 0
+    total_hours = 0
+    required_hours = 600
+
+    user = request.user
+    admin = get_object_or_404(CustomUser, id=user.id)
+    firstName = admin.first_name
+    lastName = admin.last_name
     
     if request.method == 'POST':
         student_id = request.POST.get('student_id')
         selected_student = get_object_or_404(TableStudents, id=student_id)
         time_logs = TimeLog.objects.filter(student=selected_student).order_by('-timestamp')
 
+        # I-compute ang total na oras ng trabaho ng estudyante
+        total_hours = time_logs.aggregate(total_hours=Sum('duration'))['total_hours']
+
+    # I-compute ang natitirang oras
+    remaining_hours = required_hours - total_hours if total_hours else None
+
     return render(
         request,
-        'app/admin-test.html',
+        'app/timeSheet.html',
         {
             'students': students,
             'selected_student': selected_student,
             'time_logs': time_logs,
+            'total_hours': total_hours,
+            'required_hours': required_hours,
+            'remaining_hours': remaining_hours,
+            'firstName': firstName,
+            'lastName': lastName
         }
     )

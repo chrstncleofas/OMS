@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.utils import timezone
 from django.contrib import messages
 from students.models import TableStudents, TimeLog
 from django.shortcuts import render, redirect
@@ -41,6 +42,8 @@ def TimeInAndTimeOut(request):
         if form.is_valid():
             time_log = form.save(commit=False)
             time_log.student = student
+            time_log.duration = 0
+            time_log.timestamp = timezone.now()
             time_log.save()
             messages.success(request, f'Time {time_log.action} recorded successfully with image.')
             return redirect('students:TimeInAndTimeOut')
@@ -157,11 +160,19 @@ def studentLogin(request):
         password = request.POST.get('Password')
         user = authenticate(request, username=username, password=password)
         if user:
-            if user.is_active:
-                login(request, user)
-                return render(request, 'students/loginSuccess.html', {'message': 'Login successful!'})
-            else:
-                messages.error(request, 'Your account is disabled.')
+            try:
+                student = TableStudents.objects.get(user=user)
+                if not student.is_approved:
+                    messages.warning(request, 'Your account is not approved yet. Please wait for admin approval.')
+                    return render(request, 'students/login.html')
+                else:
+                    if user.is_active:
+                        login(request, user)
+                        return redirect('students:studentPage')
+                    else:
+                        messages.error(request, 'Your account is disabled.')
+            except TableStudents.DoesNotExist:
+                messages.error(request, 'Invalid username or password.')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'students/login.html')

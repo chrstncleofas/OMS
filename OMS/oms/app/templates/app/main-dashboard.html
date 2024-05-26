@@ -25,13 +25,13 @@
                 <a href="{% url 'getAllPendingRegister' %}" class="list-group-item list-group-item-action bg-light">
                     <i class="fas fa-hourglass-half icon"></i> Pending Registration
                 </a>
-                <a href="{% url 'adminView' %}" class="list-group-item list-group-item-action bg-light">
+                <a href="" class="list-group-item list-group-item-action bg-light">
                     <i class="fas fa-user-graduate"></i> Manage Student
                 </a>
                 <a href="#" class="list-group-item list-group-item-action bg-light">
                     <i class="fas fa-chart-line"></i> Reports
                 </a>
-                <a href="#" class="list-group-item list-group-item-action bg-light">
+                <a href="{% url 'timeSheet' %}" class="list-group-item list-group-item-action bg-light">
                     <i class="fas fa-clock"></i> Time Sheet
                 </a>
                 <a href="#" class="list-group-item list-group-item-action bg-light">
@@ -78,7 +78,7 @@
                             <div class="card-body">
                                 <i class="fas fa-check-circle icon"></i>
                                 <div>
-                                    <div class="count">1</div>
+                                    <div class="count">{{ approve_count }}</div>
                                     <div>Approved</div>
                                 </div>
                             </div>

@@ -53,6 +53,13 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">OMS Student Registration</h5>
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <form method="post" action="{% url 'students:register' %}">
                             {% csrf_token %}
                             <div class="row">

@@ -38,6 +38,13 @@
         a:hover {
             text-decoration: none;
         }
+        .shadow-box {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 6px;
+            background-color: #fff;
+            width: 68%;
+        }
     </style>
 </head>
 <body>
@@ -68,14 +75,14 @@
                     </ul>
                 </div>
             </nav>
-            <div class="container mt-5">
-                <h2>Time In/Time Out</h2>
+            <div class="container mt-5 shadow-box">
+                <h2>Time In & Time Out</h2>
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     {{ form.as_p }}
                     <div class="form-group">
-                        <button type="submit" id="timeInBtn" class="btn btn-success" onclick="document.getElementById('id_action').value='IN'">Time In</button>
-                        <button type="submit" id="timeOutBtn" class="btn btn-danger" onclick="document.getElementById('id_action').value='OUT'">Time Out</button>
+                        <button type="submit" id="timeInBtn" class="btn btn-success" onclick="document.getElementById('id_action').value='IN'" disabled>Time In</button>
+                        <button type="submit" id="timeOutBtn" class="btn btn-danger" onclick="document.getElementById('id_action').value='OUT'" disabled>Time Out</button>
                     </div>
                 </form>
                 <h3 class="mt-5">Time Logs</h3>
@@ -93,7 +100,7 @@
                             <tr>
                                 <td>{{ forloop.counter }}</td>
                                 <td>{{ log.action }}</td>
-                                <td>{{ log.timestamp }}</td>
+                                <td>{{ log.timestamp|date:"F j, Y, g:i a" }}</td>
                                 <td>
                                     {% if log.image %}
                                         <img src="{{ log.image.url }}" alt="Time {{ log.action }} Image" style="width: 100px; height: 100px;">
@@ -118,7 +125,7 @@
             $("#wrapper").toggleClass("toggled");
         });
 
-        document.getElementById('imageUpload').addEventListener('change', function() {
+        document.getElementById('id_image').addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 document.getElementById('timeInBtn').disabled = false;
                 document.getElementById('timeOutBtn').disabled = false;
