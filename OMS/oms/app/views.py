@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db.models import Q
 from django.http import Http404
 from django.urls import reverse
@@ -154,10 +155,11 @@ def is_admin(user):
     return user.is_superuser
 
 @user_passes_test(is_admin)
+
 def timeSheet(request):
     students = TableStudents.objects.all()
     selected_student = None
-    time_logs = 0
+    time_logs = []
     total_hours = 0
     required_hours = 600
 
@@ -165,17 +167,30 @@ def timeSheet(request):
     admin = get_object_or_404(CustomUser, id=user.id)
     firstName = admin.first_name
     lastName = admin.last_name
-    
+
     if request.method == 'POST':
         student_id = request.POST.get('student_id')
         selected_student = get_object_or_404(TableStudents, id=student_id)
-        time_logs = TimeLog.objects.filter(student=selected_student).order_by('-timestamp')
+        time_logs = TimeLog.objects.filter(student=selected_student).order_by('timestamp')
 
-        # I-compute ang total na oras ng trabaho ng estudyante
-        total_hours = time_logs.aggregate(total_hours=Sum('duration'))['total_hours']
+        total_work_seconds = 0
+        daily_start = None
+        daily_total = timedelta()
 
-    # I-compute ang natitirang oras
-    remaining_hours = required_hours - total_hours if total_hours else None
+        for log in time_logs:
+            if log.action == 'IN':
+                daily_start = log.timestamp
+            elif log.action == 'OUT' and daily_start:
+                work_period = log.timestamp - daily_start
+                if work_period > timedelta(hours=1):  # Consider only valid work periods
+                    work_period -= timedelta(hours=1)  # Subtract 1 hour break
+                daily_total += work_period
+                daily_start = None  # Reset for next IN
+
+        total_work_seconds = daily_total.total_seconds()
+        total_hours = total_work_seconds / 3600
+
+    remaining_hours = required_hours - total_hours
 
     return render(
         request,
@@ -191,3 +206,41 @@ def timeSheet(request):
             'lastName': lastName
         }
     )
+
+# def timeSheet(request):
+#     students = TableStudents.objects.all()
+#     selected_student = None
+#     time_logs = 0
+#     total_hours = 0
+#     required_hours = 600
+
+#     user = request.user
+#     admin = get_object_or_404(CustomUser, id=user.id)
+#     firstName = admin.first_name
+#     lastName = admin.last_name
+    
+#     if request.method == 'POST':
+#         student_id = request.POST.get('student_id')
+#         selected_student = get_object_or_404(TableStudents, id=student_id)
+#         time_logs = TimeLog.objects.filter(student=selected_student).order_by('-timestamp')
+
+#         # I-compute ang total na oras ng trabaho ng estudyante
+#         total_hours = time_logs.aggregate(total_hours=Sum('duration'))['total_hours']
+
+#     # I-compute ang natitirang oras
+#     remaining_hours = required_hours - total_hours if total_hours else None
+
+#     return render(
+#         request,
+#         'app/timeSheet.html',
+#         {
+#             'students': students,
+#             'selected_student': selected_student,
+#             'time_logs': time_logs,
+#             'total_hours': total_hours,
+#             'required_hours': required_hours,
+#             'remaining_hours': remaining_hours,
+#             'firstName': firstName,
+#             'lastName': lastName
+#         }
+#     )

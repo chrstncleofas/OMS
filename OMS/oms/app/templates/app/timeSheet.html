@@ -143,7 +143,7 @@
                 <h3 class="mt-5">Time Logs for {{ selected_student.Firstname }} {{ selected_student.Lastname }}</h3>
                 {% if time_logs %}
                 <table class="table table-bordered mt-3">
-                    <thead>
+                    <thead class="thead-dark">
                         <tr>
                             <th>#</th>
                             <th>Action</th>
@@ -159,8 +159,7 @@
                             <td>{{ log.timestamp }}</td>
                             <td>
                                 {% if log.image %}
-                                <img src="{{ log.image.url }}" alt="Time {{ log.action }} Image"
-                                    style="width: 100px; height: 100px;">
+                                <img src="{{ log.image.url }}" alt="Time {{ log.action }} Image" class="img-fluid" style="width: 100px; height: 100px;">
                                 {% else %}
                                 No Image
                                 {% endif %}
@@ -173,14 +172,37 @@
                 <p>No logs found for this student.</p>
                 {% endif %}
                 {% endif %}
-                <div>
+                <div class="mt-4">
                     {% if total_hours %}
-                        <h4>Total Work Hours: {{ total_hours }} hours</h4>
-                        <h4>Required Duration: {{ required_hours }} hours</h4>
-                        <h4>Remaining Hours: {{ remaining_hours }} hours</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card text-white bg-primary mb-3">
+                                <div class="card-header">Total Work Hours</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ total_hours }} hours</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-white bg-success mb-3">
+                                <div class="card-header">Required Duration</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ required_hours }} hours</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card text-white bg-warning mb-3">
+                                <div class="card-header">Remaining Hours</div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ remaining_hours }} hours</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     {% endif %}
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
     <!-- Scripts -->
