@@ -22,3 +22,18 @@ class StudentRegistrationForm(forms.ModelForm):
         self.fields['Lastname'].required = True
         self.fields['Course'].required = True
         self.fields['Year'].required = True
+
+class ChangePasswordForm(forms.Form):
+    current_password = forms.CharField(widget=forms.PasswordInput, label='Current Password')
+    new_password = forms.CharField(widget=forms.PasswordInput, label='New Password')
+    confirm_password = forms.CharField(widget=forms.PasswordInput, label='Confirm New Password')
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if new_password and confirm_password and new_password != confirm_password:
+            self.add_error('confirm_password', "New password and confirm password do not match")
+        
+        return cleaned_data

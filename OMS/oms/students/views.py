@@ -1,9 +1,13 @@
 from django.urls import reverse
-from django.db import connection
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from students.forms import StudentRegistrationForm, UserForm
+from students.models import TableStudents
+from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from students.forms import StudentRegistrationForm, UserForm, ChangePasswordForm
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponsePermanentRedirect
 
 def studentHome(request) -> HttpResponse:
@@ -11,6 +15,81 @@ def studentHome(request) -> HttpResponse:
 
 def studentDashboard(request) -> HttpResponse:
     return render(request, 'students/student-dashboard.html')
+
+@login_required
+def mainDashboard(request) -> HttpResponse:
+    user = request.user
+    student = get_object_or_404(TableStudents, user=user)
+    firstName = student.Firstname
+    lastName = student.Lastname
+    return render(
+        request,
+        'students/student-main-dashboard.html',
+        {
+            'firstName': firstName,
+            'lastName': lastName,
+        }
+    )
+
+def TimeInAndTimeOut(request):
+    user = request.user
+    student = get_object_or_404(TableStudents, user=user)
+    firstName = student.Firstname
+    lastName = student.Lastname
+    return render(
+        request,
+        'students/timeIn-timeOut.html',
+        {
+            'firstName': firstName,
+            'lastName': lastName,
+        }
+    )
+
+def studentProfile(request):
+    user = request.user
+    student = get_object_or_404(TableStudents, user=user)
+    firstName = student.Firstname
+    lastName = student.Lastname
+    return render(
+        request,
+        'students/student-profile.html',
+        {
+            'firstName': firstName,
+            'lastName': lastName,
+        }
+    )
+
+def changePassword(request):
+    user = request.user
+    student = get_object_or_404(TableStudents, user=user)
+    firstName = student.Firstname
+    lastName = student.Lastname
+    if request.method == 'POST':
+        form = ChangePasswordForm(request.POST)
+        if form.is_valid():
+            current_password = form.cleaned_data['current_password']
+            new_password = form.cleaned_data['new_password']            
+            if check_password(current_password, user.password):
+                user.set_password(new_password)
+                user.save()
+                update_session_auth_hash(request, user)
+                messages.success(request, 'Your password was successfully updated!')
+                return redirect('students:changePassword')
+            else:
+                messages.error(request, 'Your current password was entered incorrectly. Please enter it again.')
+    else:
+        form = ChangePasswordForm()
+    
+    return render(
+        request,
+        'students/changePassword.html',
+        {
+            'form': form,
+            'firstName': firstName,
+            'lastName': lastName,
+
+        }
+    )
 
 def studentRegister(request):
     if request.method == 'POST':

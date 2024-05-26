@@ -29,10 +29,17 @@
             background-color: #f8f9fa;
             padding: 20px 0;
             text-align: center;
+            margin-top: 26px;
         }
         .footer p {
             margin: 0;
             color: #6c757d;
+        }
+        .outer-container {
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            margin-top: 10px;
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -69,6 +76,13 @@
                 <div class="modal-body">
                     <form method="post" action="{% url 'login' %}">
                         {% csrf_token %}
+                        {% if messages %}
+                            <div class="alert alert-danger" role="alert">
+                                {% for message in messages %}
+                                    {{ message }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                         <div class="form-group">
                             <label for="username">Username</label>
                             <input type="text" class="form-control" id="username" name="username" required>
@@ -136,13 +150,6 @@
      <div class="container mt-5">
         <div class="outer-container">
             <h5 class="mb-4">All Features</h5>
-            {% if messages %}
-                        {% for message in messages %}
-                            <div class="alert alert-danger" role="alert">
-                                {{ message }}
-                            </div>
-                        {% endfor %}
-                    {% endif %}
             <div class="row">
                 <div class="col-lg-4 mb-4">
                     <div class="card">
