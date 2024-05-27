@@ -119,8 +119,11 @@ def user_login(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect
         password = request.POST.get('password')
         user = authenticate(request, username=username, password=password)
         if user:
-            login(request, user)
-            return render(request, 'app/loginSuccess.html', {'message': 'Login successful!'})
+            if user.is_superuser:
+                login(request, user)
+                return render(request, 'app/loginSuccess.html', {'message': 'Login successful!'})
+            else:
+                messages.error(request, 'You do not have the necessary permissions to access this site.')
         else:
             messages.error(request, 'Invalid username or password.')
     return render(request, 'app/base.html')
