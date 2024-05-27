@@ -51,17 +51,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend_side.wsgi.application'
 
+# ito AWS Server Database RDS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ojt',
-        'USER': 'postgres',
-        'PASSWORD': 'ojtPassword',
-        'HOST' : 'localhost',
-        'PORT' : '5432'
+        'NAME': 'mydatabase',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'mydatabase.cbqmmacgq9y0.us-east-1.rds.amazonaws.com',
+        'PORT': '5432',
     }
 }
 
+# Ito for Local Machine Database
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
