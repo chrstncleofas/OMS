@@ -131,6 +131,28 @@
                 document.getElementById('timeOutBtn').disabled = false;
             }
         });
+
+        document.getElementById('id_image').addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                document.getElementById('timeBtn').disabled = false;
+            }
+        });
+
+        // Function to toggle between "Time In" and "Time Out"
+        function toggleTime() {
+            var timeBtn = document.getElementById('timeBtn');
+            if (timeBtn.value === 'IN') {
+                timeBtn.value = 'OUT';
+                timeBtn.classList.remove('btn-success');
+                timeBtn.classList.add('btn-danger');
+                timeBtn.textContent = 'Time Out';
+            } else {
+                timeBtn.value = 'IN';
+                timeBtn.classList.remove('btn-danger');
+                timeBtn.classList.add('btn-success');
+                timeBtn.textContent = 'Time In';
+            }
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store and Display Input Data</title>
+    <style>
+        .label-container {
+            margin-top: 20px;
+        }
+        .label-container .label-item {
+            margin-bottom: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h2>Store and Display Input Data</h2>
+        <label for="inputField">Enter Data:</label>
+        <input type="text" id="inputField" name="inputField">
+        <div id="labelContainer" class="label-container"></div>
+    </div>
+
+    <script>
+        document.getElementById('inputField').addEventListener('input', function() {
+            var inputField = document.getElementById('inputField');
+            var inputValue = inputField.value.trim();
+            if (inputValue) {
+                var labelContainer = document.getElementById('labelContainer');
+
+                // Create a new label element
+                var newLabel = document.createElement('label');
+                newLabel.classList.add('label-item');
+                newLabel.textContent = inputValue;
+
+                // Append the new label to the container
+                labelContainer.appendChild(newLabel);
+
+                // Clear the input field
+                inputField.value = '';
+            }
+        });
+    </script>
+</body>
+</html>
