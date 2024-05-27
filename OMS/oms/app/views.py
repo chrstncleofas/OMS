@@ -1,4 +1,5 @@
 from datetime import timedelta
+from typing import Union
 from django.db.models import Q
 from django.http import Http404
 from django.urls import reverse
@@ -26,7 +27,7 @@ PENDING_APPLICATION = 'app/pending.html'
 PROFILE = 'app/profile.html'
 CHANGE_PASSWORD = 'app/changePassword.html'
 
-def home(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect | HttpResponse):        
+def home(request) -> Union[HttpResponseRedirect, HttpResponsePermanentRedirect, HttpResponse]:        
     return render(request, HOME_URL_PATH)
 
 def dashboard(request) -> HttpResponse:
@@ -110,10 +111,10 @@ def getAllPendingRegister(request):
         'lastName': lastName
     })
 
-def pendingApplication(request) -> HttpResponse:
+def pendingApplication(request):
     return render(request, PENDING_APPLICATION)
 
-def user_login(request) -> (HttpResponseRedirect | HttpResponsePermanentRedirect | HttpResponse):
+def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
